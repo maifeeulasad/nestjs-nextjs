@@ -1,21 +1,29 @@
 import { ChangeEvent, FormEvent, useState } from "react";
-import Router from 'next/router'
+import Router from "next/router";
 
 export default function Signup() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const onUsernameChange = (e: ChangeEvent<HTMLInputElement>) =>
-    setUsername(e.target.value);
+  const onEmailChange = (e: ChangeEvent<HTMLInputElement>) =>
+    setEmail(e.target.value);
   const onPasswordChange = (e: ChangeEvent<HTMLInputElement>) =>
     setPassword(e.target.value);
 
   const signupCall = (e: FormEvent) => {
     e.preventDefault();
-    // todo: api call here -signup
-    console.log(username)
-    console.log(password)
-    Router.push('/login')
+
+    fetch("http://127.0.0.1:3002/users/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email: email, password: password }),
+    })
+      .then((res) => res.json())
+      .then(() => {
+        Router.push("/login");
+      });
   };
   return (
     <form onSubmit={signupCall}>
@@ -27,7 +35,7 @@ export default function Signup() {
         placeholder="Enter Email"
         name="email"
         required
-        onChange={onUsernameChange}
+        onChange={onEmailChange}
       />
 
       <label>
