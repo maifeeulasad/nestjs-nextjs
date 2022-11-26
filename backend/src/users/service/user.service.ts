@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/typeorm';
@@ -24,7 +24,13 @@ export class UsersService {
   }
 
   async login(userDto: UserDto) {
-    await this.findUserByEmailAndPassword(userDto.email, userDto.password);
+    const user = await this.findUserByEmailAndPassword(
+      userDto.email,
+      userDto.password,
+    );
+    if (user === null || user === undefined) {
+      throw new UnauthorizedException();
+    }
     const payload = { username: userDto.email };
     return {
       access_token: this.jwtService.sign(payload),

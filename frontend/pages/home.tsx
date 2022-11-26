@@ -13,6 +13,8 @@ export default function Home() {
   const [nasaData, setNasaData] = useState<INasaDatum[]>([]);
   const [accessToken] = useRecoilState(accessTokenAtom);
 
+  const isDev = () : boolean => process.env.NODE_ENV === "development"
+
   useEffect(() => {
     if (accessToken === undefined) {
       Router.push("/login");
@@ -27,21 +29,23 @@ export default function Home() {
     }
   }, [accessToken]);
 
-  return (
-    <div>
-      {nasaData.map((nasaDatum) => {
-        return (
-          <div key={nasaDatum.id}>
-            <img
-              width={200}
-              height={200}
-              src={nasaDatum.img_src}
-              alt={nasaDatum.id.toString()}
-            />
-            <div>{nasaDatum.earth_date}</div>
-          </div>
-        );
-      })}
-    </div>
-  );
+
+  if(isDev()){
+    <div>not stressting nasa resource server</div>
+  }
+  return <div>
+  {nasaData.map((nasaDatum) => {
+    return (
+      <div key={nasaDatum.id}>
+        <img
+          width={200}
+          height={200}
+          src={nasaDatum.img_src}
+          alt={nasaDatum.id.toString()}
+        />
+        <div>{nasaDatum.earth_date}</div>
+      </div>
+    );
+  })}
+</div>
 }
